@@ -5,12 +5,9 @@ $user = "root";
 $passwd = "";
 
 $pdo = new PDO($dsn, $user, $passwd);
-$series_request = $pdo->prepare("SELECT * FROM series WHERE id=?");
-$series_request->execute([$_GET['id']]);
-$to_show = $series_request->fetch(PDO::FETCH_ASSOC);
 if(isset($_POST['title'])) {
     $awards = boolval($_POST['has_won_awards']);
-    $updating_series = $pdo->prepare("UPDATE series SET title=?, rating=?, description=?, has_won_awards=?, seasons=?, country=?, language=? WHERE id=?");
+    $updating_series = $pdo->prepare("INSERT INTO series (title, rating, description, has_won_awards, seasons, country, language) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $updating_series->execute(
         [$_POST['title'], 
         $_POST['rating'], 
@@ -18,8 +15,7 @@ if(isset($_POST['title'])) {
         $awards, 
         $_POST['seasons'], 
         $_POST['country'], 
-        $_POST['language'], 
-        $_GET['id']]
+        $_POST['language']]
     );
 }
 
@@ -49,37 +45,37 @@ textarea[name=description] {
 <body>
     <main>
         <h1>Welkom op het netland beheerderspaneel</h1>
-        <h2>Hier kunt u alle data van<?php echo PHP_EOL . $to_show['title']; ?> wijzigen:</h2>
+        <h2>Hier kunt u de data van een nieuwe serie toevoegen:</h2>
         <form method="post">
             <div class='sort'>
                 <h2>Titel</h2>
-                <input type="text" name="title" value="<?php echo $to_show['title'];?>">
+                <input type="text" name="title" placeholder="Titel hier">
             </div>
             <div class='sort'>
                 <h2>Rating</h2>
-                <input type="text" name="rating" value="<?php echo $to_show['rating'];?>">
+                <input type="text" name="rating" placeholder="Rating hier">
             </div>
             <div class='sort'>
                 <h2>Description</h2>
-                <textarea rows="15" cols="40"type="text" name="description"><?php echo $to_show['description'];?></textarea>
+                <textarea rows="15" cols="40"type="text" name="description" placeholder="Beschrijving hier"></textarea>
             </div>
             <div class='sort'>
                 <h2>Amount of Awards</h2>
-                <input type="number" name="has_won_awards" value="<?php echo $to_show['has_won_awards'];?>">
+                <input type="number" name="has_won_awards" placeholder="Aantal prijzen hier">
             </div>
             <div class='sort'>
                 <h2>Seasons</h2>
-                <input type="number" name="seasons" value="<?php echo $to_show['seasons'];?>">
+                <input type="number" name="seasons" placeholder="Hoeveelheid seizoenen hier">
             </div>
             <div class='sort'>
                 <h2>Country of Origin</h2>
-                <input type="text" name="country" value="<?php echo $to_show['country'];?>">
+                <input type="text" name="country" placeholder="Land van afkomst hier">
             </div>
             <div class='sort'>
                 <h2>Language</h2>
-                <input type="text" name="language" value="<?php echo $to_show['language'];?>">
+                <input type="text" name="language" placeholder="Gesproken taal in serie hier">
             </div>
-            <input type="submit" name='submit' value='Wijzig'>
+            <input type="submit" name='submit' value='Add'>
         </form>
     </main>
 </body>

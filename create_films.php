@@ -5,19 +5,15 @@ $user = "root";
 $passwd = "";
 
 $pdo = new PDO($dsn, $user, $passwd);
-$film_request = $pdo->prepare("SELECT * FROM films WHERE volgnummer=?");
-$film_request->execute([$_GET['id']]);
-$to_show = $film_request->fetch(PDO::FETCH_ASSOC);
 if(isset($_POST['titel'])) {
-    $updating_series = $pdo->prepare("UPDATE films SET titel=?, duur_in_min=?, omschrijving=?, datum_van_uitkomst=?, land_van_uitkomst=?, trailer_id_youtube=? WHERE volgnummer=?");
+    $updating_series = $pdo->prepare("INSERT INTO films (titel, duur_in_min, omschrijving, datum_van_uitkomst, land_van_uitkomst, trailer_id_youtube) VALUES (?, ?, ?, ?, ?, ?)");
     $updating_series->execute(
         [$_POST['titel'], 
         $_POST['duur_in_min'], 
         $_POST['omschrijving'], 
         $_POST['datum_van_uitkomst'], 
         $_POST['land_van_uitkomst'], 
-        $_POST['trailer_id_youtube'], 
-        $_GET['id']]
+        $_POST['trailer_id_youtube']]
     );
 }
 ?>
@@ -48,33 +44,33 @@ textarea[name=omschrijving] {
 <body>
     <main>
         <h1>Welkom op het netland beheerderspaneel</h1>
-        <h2>Hier kunt u alle data van<?php echo PHP_EOL . $to_show['titel']; ?> wijzigen:</h2>
+        <h2>Hier kunt u een nieuwe film toevoegen:</h2>
         <form method="post">
             <div class='sort'>
                 <h2>Titel</h2>
-                <input type="text" name="titel" value="<?php echo $to_show['titel'];?>">
+                <input type="text" name="titel" placeholder="Titel hier">
             </div>
             <div class='sort'>
                 <h2>Duration</h2>
-                <input type="number" name="duur_in_min" value="<?php echo $to_show['duur_in_min'];?>">
+                <input type="number" name="duur_in_min" placeholder="Duur hier">
             </div>
             <div class='sort'>
                 <h2>Description</h2>
-                <textarea rows="15" cols="40"type="text" name="omschrijving"><?php echo $to_show['omschrijving'];?></textarea>
+                <textarea rows="15" cols="40"type="text" name="omschrijving" placeholder="Omschrijving hier"></textarea>
             </div>
             <div class='sort'>
                 <h2>Release Date</h2>
-                <input type="date" name="datum_van_uitkomst" value="<?php echo $to_show['datum_van_uitkomst'];?>">
+                <input type="date" name="datum_van_uitkomst" placeholder="Datum van uitkomst hier">
             </div>
             <div class='sort'>
                 <h2>Country of Origin</h2>
-                <input type="text" name="land_van_uitkomst" value="<?php echo $to_show['land_van_uitkomst'];?>">
+                <input type="text" name="land_van_uitkomst" placeholder="Land van afkomst hier">
             </div>
             <div class='sort'>
                 <h2>Trailer ID for Youtube</h2>
-                <input type="text" name="trailer_id_youtube" value="<?php echo $to_show['trailer_id_youtube'];?>">
+                <input type="text" name="trailer_id_youtube" placeholder="Id of youtube trailer hier">
             </div>
-            <input type="submit" name='submit' value='Wijzig'>
+            <input type="submit" name='submit' value='Add'>
         </form>
     </main>
 </body>
